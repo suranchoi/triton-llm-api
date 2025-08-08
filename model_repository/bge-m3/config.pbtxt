@@ -1,0 +1,28 @@
+name: "bge-m3"
+backend: "python"
+
+max_batch_size: 0
+
+input [
+  {
+    name: "text_input"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
+
+output [
+  {
+    name: "embedding_output"
+    data_type: TYPE_FP32
+    dims: [ 1024 ]
+  }
+]
+
+instance_group [
+  {
+    kind: KIND_GPU
+    count: 1
+    gpus: [ 1 ]  
+  }
+]

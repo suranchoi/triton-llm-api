@@ -1,0 +1,107 @@
+# 🧠 LLM + Embedding Model API Server (Triton + FastAPI)
+
+> This project serves GGUF-format LLM and embedding models based on Llama.cpp via Triton Inference Server,  
+> and provides a REST API interface through FastAPI for inference and embedding tasks.
+
+---
+
+## 📁 Project Structure
+
+```
+llm-triton-api/
+├── fastapi_server/
+│   ├── embedding_api.py           # /embedding API route
+│   └── llm_api.py                 # /generate API route
+│
+├── model_repository/
+│   ├── bge-m3/
+│   │
+│   ├── multilingual-e5-large/
+│   │
+│   └── llm/
+```
+
+---
+
+## 🚀 Key Features
+
+- ✅ Serve GGUF models using Triton Python backend (based on Llama.cpp)
+- ✅ REST API endpoints using FastAPI for LLM and embedding tasks
+- ✅ Endpoints: `/generate` and `/embedding`
+
+---
+
+## 🔧 Running the Server
+
+### 1. Run Triton Inference Server
+
+```bash
+docker pull gzgz153/triton-vllm:1.2.0
+
+docker run -d -it --name triton-llm-api \
+--gpus all \
+-e DOCSRAY_MODEL=/data2/huggingface/hub/models--tgisaturday--Docsray/snapshots/1f96aea426e018521ce2958eddf65240b3009ba4/ \
+--shm-size=1G \
+--ulimit memlock=-1 --ulimit stack=67108864 \
+-p 8000:8000 -p 8001:8001 -p 8002:8002 \
+-v /data2:/data2 \
+triton-vllm:1.2.0 \
+tritonserver --model-repository /data2/llm/triton-llm-api/model_repository
+```
+---
+
+### 2. Run FastAPI Server
+
+```bash
+cd fastapi_server
+python llm_api.py 
+python embedding_api.py 
+```
+
+---
+
+## 🌐 API Examples
+
+### 🔸 Text Generation (LLM)
+
+```
+POST /generate
+{
+  "prompt": "Hello, who are you?"
+}
+```
+
+### 🔹 Text Embedding
+
+```
+POST /embedding
+{
+  "text": "What is artificial intelligence?",
+  "is_query": false
+}
+```
+
+---
+
+## 🧪 curl Test Examples
+
+### ✅ Text Generation
+
+```bash
+curl -X POST http://localhost:7000/generate \
+     -H "Content-Type: application/json" \
+     -d '{
+           "prompt": "Hello, what time is it now?"
+         }'
+```
+
+### ✅ Text Embedding
+
+```bash
+curl -X POST http://localhost:7000/embedding \
+     -H "Content-Type: application/json" \
+     -d '{
+           "text": "What is AI?",
+           "is_query": false
+         }'
+```
