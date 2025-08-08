@@ -6,6 +6,11 @@
 ---
 
 ## 📁 Project Structure
+This project integrates Triton Inference Server and FastAPI to serve LLM and embedding models with a clean API interface.
+
+- The model_repository/ directory is used by Triton Inference Server to load and serve GGUF-format LLM and embedding models.
+- The fastapi_server/ directory contains the REST API server code that handles client requests and communicates with the Triton backend.
+
 
 ```
 llm-triton-api/
@@ -15,9 +20,7 @@ llm-triton-api/
 │
 ├── model_repository/
 │   ├── bge-m3/
-│   │
 │   ├── multilingual-e5-large/
-│   │
 │   └── llm/
 ```
 
