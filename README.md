@@ -34,23 +34,34 @@ llm-triton-api/
 
 ---
 
-## 🔧 Running the Server
+## 🐳 Build and Run Triton Inference Server (Docker)
 
-### 1. Run Triton Inference Server
+### 1. Build the Docker image
 
 ```bash
-docker pull gzgz153/triton-vllm:1.2.0
+docker build . -t triton-llm:latest
+```
 
+### 2. Run the container
+| Note: Update the DOCSRAY_MODEL environment variable according to the path of your model directory.
+```bash
 docker run -d -it --name triton-llm-api \
---gpus all \
--e DOCSRAY_MODEL=/data2/huggingface/hub/models--tgisaturday--Docsray/snapshots/1f96aea426e018521ce2958eddf65240b3009ba4/ \
---shm-size=1G \
---ulimit memlock=-1 --ulimit stack=67108864 \
--p 8000:8000 -p 8001:8001 -p 8002:8002 \
--v /data2:/data2 \
-triton-vllm:1.2.0 \
+  --gpus all \
+  -e DOCSRAY_MODEL=/data2/huggingface/models/Docsray \
+  --shm-size=1G \
+  --ulimit memlock=-1 --ulimit stack=67108864 \
+  -p 8000:8000 -p 8001:8001 -p 8002:8002 \
+  -v /data2:/data2 \
+  triton-llm:latest
+```
+
+### 3. Start Triton inside the container
+Once inside the container shell, run:
+```bash
 tritonserver --model-repository /data2/llm/triton-llm-api/model_repository
 ```
+
+
 ---
 
 ### 2. Run FastAPI Server
